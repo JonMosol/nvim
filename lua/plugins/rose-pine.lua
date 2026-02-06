@@ -70,8 +70,8 @@ return {
       end,
     })
 
-    -- Set colorscheme
-    vim.cmd("colorscheme rose-pine")
+    -- Set colorscheme (disabled - using Tokyonight instead)
+    -- vim.cmd("colorscheme rose-pine")
     -- Alternative variants:
     -- vim.cmd("colorscheme rose-pine-main")
     -- vim.cmd("colorscheme rose-pine-moon")

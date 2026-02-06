@@ -21,7 +21,8 @@ A modular Neovim configuration with LSP support, autocompletion, git integration
 │       ├── nvim-tree.lua      # File explorer
 │       ├── render-markdown.lua # Beautiful markdown rendering in terminal
 │       ├── telescope.lua      # Fuzzy finder for files and text
-│       └── treesitter.lua     # Treesitter for better syntax highlighting
+│       ├── treesitter.lua     # Treesitter for better syntax highlighting
+│       └── which-key.lua      # Keybinding hints and discovery
 └── README.md                  # This file
 ```
 
@@ -39,6 +40,7 @@ A modular Neovim configuration with LSP support, autocompletion, git integration
 - **Statusline**: Lualine with icons, git status, and diagnostics
 - **Markdown Rendering**: render-markdown.nvim for beautiful in-terminal markdown display
 - **Image Viewer**: neo-img for viewing images inline with sixel protocol (works on Windows!)
+- **Keybinding Discovery**: which-key.nvim for learning and remembering keybindings
 
 ## ⚙️ Settings
 
@@ -103,7 +105,8 @@ File tree explorer with icons.
 Fuzzy finder for files, text, and more with image preview support.
 
 **Keybindings**:
-- `\ff` - Find files
+- `\ff` - Find files (respects `.gitignore`, hides hidden files)
+- `\fF` - Find ALL files (includes hidden files and gitignored files)
 - `\fg` - Live grep (search text in files) - requires `ripgrep`
 - `\fb` - Find buffers (open files in current session)
 - `\fh` - Help tags

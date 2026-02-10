@@ -18,7 +18,9 @@ A modular Neovim configuration with LSP support, autocompletion, git integration
 │       ├── lsp.lua            # LSP configuration, Mason, and Python support
 │       ├── lualine.lua        # Statusline with icons and git integration
 │       ├── neo-img.lua        # Image viewer with sixel support
+│       ├── nvim-autopairs.lua # Auto-close brackets, quotes, etc.
 │       ├── nvim-tree.lua      # File explorer
+│       ├── aerial.lua         # Code outline sidebar
 │       ├── render-markdown.lua # Beautiful markdown rendering in terminal
 │       ├── telescope.lua      # Fuzzy finder for files and text
 │       ├── treesitter.lua     # Treesitter for better syntax highlighting
@@ -28,7 +30,7 @@ A modular Neovim configuration with LSP support, autocompletion, git integration
 
 ## 🚀 Features
 
-- **Plugin Manager**: [Lazy.nvim](https://github.com/folke/lazy.nvim) for fast plugin management
+- **Plugin Manager**: [Lazy.nvim](https://github.com/folke/lazy.nvim) for fast plugin management with auto-update checking
 - **LSP Support**: Language Server Protocol with Mason for easy server installation
 - **Autocompletion**: nvim-cmp with LSP, buffer, path, and snippet sources
 - **Syntax Highlighting**: Treesitter for accurate, context-aware syntax highlighting
@@ -36,19 +38,24 @@ A modular Neovim configuration with LSP support, autocompletion, git integration
 - **Git Integration**: Gitsigns for diff indicators and LazyGit for interactive git operations
 - **File Navigation**: nvim-tree for file browsing and Telescope for fuzzy finding
 - **Python Support**: Pyright LSP with automatic virtual environment detection and debugpy integration
-- **Colorscheme**: Rose Pine with transparency support
+- **Colorscheme**: Tokyonight (active) and Rose Pine (available) with transparency support
 - **Statusline**: Lualine with icons, git status, and diagnostics
 - **Markdown Rendering**: render-markdown.nvim for beautiful in-terminal markdown display
 - **Image Viewer**: neo-img for viewing images inline with sixel protocol (works on Windows!)
-- **Keybinding Discovery**: which-key.nvim for learning and remembering keybindings
+- **Keybinding Discovery**: which-key.nvim for learning and remembering keybindings with popup hints
+- **Auto-pairs**: nvim-autopairs for automatic bracket/quote pairing with fast wrap
+- **Code Outline**: aerial.nvim for navigating code structure (functions, classes, etc.)
 
 ## ⚙️ Settings
 
 **Leader Key**: `\` (backslash)
 
 **Editor Options**:
-- `scrolloff = 8` - Keep 8 lines above/below cursor
+- `scrolloff = 20` - Keep 20 lines above/below cursor
 - `sidescrolloff = 8` - Keep 8 columns left/right of cursor
+- `number = true` - Show absolute line numbers
+- `relativenumber = true` - Show relative line numbers
+- `wrap = false` - Disable word wrap
 
 ## 🔌 Plugins
 
@@ -208,7 +215,36 @@ Advanced syntax highlighting using AST (Abstract Syntax Tree) parsing.
 
 ### Colorscheme
 
-#### Rose Pine
+#### Tokyonight (Active)
+A clean, dark colorscheme inspired by Tokyo's night skyline.
+
+**Features**:
+- Four variants: storm (default), moon, night, and day
+- Transparency support for terminal backgrounds
+- Italic comments and keywords
+- Terminal color integration
+
+**Configuration**:
+- Edit `lua/plugins/tokyonight.lua` to change variants or enable transparency
+- Current setting: `transparent = false`, `style = "storm"`
+
+**Variants**:
+```lua
+-- In tokyonight.lua, change the colorscheme command to:
+vim.cmd("colorscheme tokyonight")        -- Auto (storm)
+vim.cmd("colorscheme tokyonight-storm")  -- Storm variant (default)
+vim.cmd("colorscheme tokyonight-moon")   -- Moon variant (more contrast)
+vim.cmd("colorscheme tokyonight-night")  -- Night variant (darker)
+vim.cmd("colorscheme tokyonight-day")    -- Day variant (light)
+```
+
+**Switching to Rose Pine**:
+To use Rose Pine instead:
+1. Edit `lua/plugins/tokyonight.lua` and comment out line 38: `-- vim.cmd("colorscheme tokyonight")`
+2. Edit `lua/plugins/rose-pine.lua` and uncomment line 74: `vim.cmd("colorscheme rose-pine")`
+3. Restart Neovim
+
+#### Rose Pine (Available)
 A beautiful, low-contrast colorscheme with transparency support.
 
 **Features**:
@@ -222,7 +258,7 @@ A beautiful, low-contrast colorscheme with transparency support.
 
 **Variants**:
 ```lua
--- In colorscheme.lua, change the colorscheme command to:
+-- In rose-pine.lua, change the colorscheme command to:
 vim.cmd("colorscheme rose-pine")       -- Auto (main for dark, dawn for light)
 vim.cmd("colorscheme rose-pine-main")  -- Main variant (default dark)
 vim.cmd("colorscheme rose-pine-moon")  -- Moon variant (darker)
@@ -330,6 +366,47 @@ View images directly in Neovim using the sixel graphics protocol.
 - WezTerm users: Already supported out of the box!
 
 **Note**: Videos are not supported (terminal graphics protocols don't support video playback)
+
+### Keybinding Discovery
+
+#### which-key.nvim
+Interactive keybinding hints that appear automatically to help you discover and remember shortcuts.
+
+**Features**:
+- Popup appears after 500ms when you press a key prefix (like `\` or `g`)
+- Shows all available keybindings and their descriptions
+- Organized into logical groups (Find, Debug, Git, Code, etc.)
+- Built-in help for marks, registers, spelling suggestions, and operators
+- Modern, clean interface with icons
+
+**Usage**:
+1. Press the leader key `\` and wait 500ms
+2. A popup shows all available leader-based commands
+3. Press another key to continue (e.g., `f` for Find commands)
+4. Or press `Esc` to cancel
+
+**Other Triggers**:
+- Press `g` to see LSP "go to" commands (gd, gr, gi, etc.)
+- Press `[` or `]` to see navigation commands
+- Press `"` to see registers
+- Press `'` to see marks
+- Press `z=` to see spelling suggestions
+
+**Keybinding Groups**:
+- `\f` - Find (Telescope commands)
+- `\e` - Explorer (nvim-tree)
+- `\d` - Debug (DAP)
+- `\dp` - Debug Python
+- `\g` - Git operations
+- `\c` - Code actions (LSP)
+- `\r` - Refactor operations
+- `g` - Go to (LSP navigation)
+
+**Configuration**:
+- Edit `lua/plugins/which-key.lua` to change delay time or add custom groups
+- Current delay: 500ms (half a second)
+
+**Note**: This plugin is especially helpful when learning Neovim or when you forget a keybinding!
 
 ### Debugging
 
@@ -494,6 +571,7 @@ mv lua/plugins/telescope.lua lua/plugins/telescope.lua.disabled
 - `:Lazy update` - Update all plugins
 - `:Lazy clean` - Remove unused plugins
 - `:Lazy sync` - Install missing plugins and clean unused ones
+- `:Lazy check` - Check for plugin updates (runs automatically on startup)
 
 ### LSP
 - `:LspInfo` - Show attached LSP clients
@@ -570,6 +648,64 @@ This has been fixed. Telescope now shows image file info in preview instead of b
 ### Markdown syntax symbols not showing when editing
 This is intentional! render-markdown uses "anti-conceal" - the raw syntax appears when your cursor is on that line, and hides when you move away. Use `\mt` to toggle this behavior.
 
+### Code Editing
+
+#### nvim-autopairs
+Automatically closes brackets, quotes, and other pairs as you type.
+
+**Features**:
+- Auto-closes `()`, `[]`, `{}`, `""`, `''`, etc.
+- Treesitter integration for smart pairing in strings/comments
+- Fast wrap with `Alt+e` to quickly wrap text with pairs
+- Integrates with nvim-cmp for better completion
+
+**Fast Wrap Usage**:
+1. Type some text: `hello world`
+2. Press `Alt+e` to activate fast wrap
+3. Press a key to select the closing character position (e.g., `l`)
+4. Type the opening character (e.g., `(`)
+5. Result: `hello (world)`
+
+**Keybindings**:
+- `Alt+e` - Activate fast wrap mode
+
+#### aerial.nvim
+Code outline sidebar showing document structure (functions, classes, variables, etc.).
+
+**Features**:
+- Shows code structure from LSP or Treesitter
+- Navigate between symbols with `{` and `}`
+- Jump to symbols by pressing Enter
+- Supports Python, Lua, JavaScript, and many more languages
+- Automatically updates as you edit
+
+**Keybindings**:
+- `\a` - Toggle aerial outline sidebar
+- `\o` - Toggle aerial navigation mode
+
+**Inside Aerial**:
+- `Enter` - Jump to symbol
+- `{` / `}` - Previous/next symbol
+- `o` - Toggle fold
+- `q` - Close aerial window
+- `?` - Show help
+
+**Usage**:
+1. Open a code file (Python, Lua, etc.)
+2. Press `\a` to open the outline
+3. Navigate with `j`/`k` or `{`/`}`
+4. Press Enter to jump to a symbol
+5. The outline updates automatically as you edit
+
+### Markdown rendering not working or showing boxes
+1. Ensure you have a Nerd Font installed and configured in WezTerm
+2. Toggle rendering: `\mt`
+3. Check if file is too large (> 1.5 MB limit)
+4. Verify Treesitter markdown parser is installed: `:TSInstall markdown`
+
+### Markdown syntax symbols not showing when editing
+This is intentional! render-markdown uses "anti-conceal" - the raw syntax appears when your cursor is on that line, and hides when you move away. Use `\mt` to toggle this behavior.
+
 ## 📖 Learning Resources
 
 - [Neovim Documentation](https://neovim.io/doc/)
@@ -580,13 +716,16 @@ This is intentional! render-markdown uses "anti-conceal" - the raw syntax appear
 ## 🎯 Next Steps
 
 Consider adding:
-- **Colorscheme**: Try `tokyonight.nvim`, `catppuccin`, or `gruvbox`
 - **More LSP servers**: Use `:Mason` to install servers for other languages (JavaScript, TypeScript, Go, Rust, etc.)
 - **Testing**: `neotest` for running tests inside Neovim
 - **Git blame**: `git-blame.nvim` for inline git blame
-- **Auto-pairs**: `nvim-autopairs` for automatic bracket/quote pairing
 - **Comments**: `Comment.nvim` for easy code commenting
 - **Markdown preview**: `markdown-preview.nvim` for browser-based preview (if you prefer web rendering over terminal)
+
+**Exploring Keybindings**:
+- Press `\` and wait to see all leader-based commands with which-key
+- Press `g` to discover LSP navigation commands
+- Use `:Telescope keymaps` to search all keybindings
 
 ---
 

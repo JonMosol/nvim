@@ -87,8 +87,7 @@ return {
       { "\\hb", desc = "Blame line" },
       { "\\hd", desc = "Diff this" },
       
-      -- Toggles
-      { "\\t", group = "Toggle" },
+      -- Toggle line blame (top-level)
       { "\\tb", desc = "Toggle line blame" },
       
       -- Markdown

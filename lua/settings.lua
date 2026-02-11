@@ -10,3 +10,9 @@ vim.opt.wrap = false          -- Disable word wrap
 -- Line numbers
 vim.opt.number = true         -- Show absolute line numbers
 vim.opt.relativenumber = true -- Show relative line numbers
+
+-- Terminal settings
+vim.o.shell = 'wezterm.exe'
+vim.o.shellcmdflag = 'cli'
+vim.o.shellxquote = ''
+vim.o.shellquote = ''

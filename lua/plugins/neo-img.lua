@@ -25,7 +25,7 @@ return {
       },
       
       -- Important settings
-      size = "80%", -- size of the image in percent
+      size = "100%", -- size of the image in percent
       center = true, -- center the image in the window
       auto_open = false, -- Disable auto-open to prevent Telescope conflicts
       

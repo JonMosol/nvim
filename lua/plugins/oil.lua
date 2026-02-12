@@ -70,6 +70,31 @@ return {
         ["gx"] = "actions.open_external",
         ["g."] = "actions.toggle_hidden",
         ["g\\"] = "actions.toggle_trash",
+        ["<leader>ff"] = {
+          function()
+            require("telescope.builtin").find_files({
+              cwd = require("oil").get_current_dir()
+            })
+          end,
+          desc = "Find files in current directory",
+        },
+        ["<leader>gg"] = {
+          function()
+            -- Ensure lazygit is loaded
+            require("lazy").load({ plugins = { "lazygit.nvim" } })
+            
+            local oil = require("oil")
+            local dir = oil.get_current_dir()
+            if dir then
+              -- Change to the directory and open lazygit
+              vim.cmd("cd " .. vim.fn.fnameescape(dir))
+              vim.cmd("LazyGit")
+            else
+              vim.notify("Could not get current directory from oil", vim.log.levels.ERROR)
+            end
+          end,
+          desc = "Open LazyGit in current directory",
+        },
       },
       
       -- Set to false to disable all of the above keymaps
@@ -77,7 +102,7 @@ return {
       
       view_options = {
         -- Show files and directories that start with "."
-        show_hidden = false,
+        show_hidden = true,
         
         -- This function defines what is considered a "hidden" file
         is_hidden_file = function(name, bufnr)

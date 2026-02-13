@@ -11,6 +11,9 @@ vim.opt.wrap = false          -- Disable word wrap
 vim.opt.number = true         -- Show absolute line numbers
 vim.opt.relativenumber = true -- Show relative line numbers
 
+-- Clipboard
+vim.opt.clipboard = 'unnamedplus' -- Use system clipboard
+
 -- Terminal settings
 vim.o.shell = 'wezterm.exe'
 vim.o.shellcmdflag = 'cli'

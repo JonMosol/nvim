@@ -59,7 +59,19 @@ return {
         ["<C-v>"] = { "actions.select", opts = { vertical = true }, desc = "Open in vertical split" },
         ["<C-x>"] = { "actions.select", opts = { horizontal = true }, desc = "Open in horizontal split" },
         ["<C-t>"] = { "actions.select", opts = { tab = true }, desc = "Open in new tab" },
-        ["<C-p>"] = "actions.preview",
+        ["<C-p>"] = {
+          function()
+            -- Save current splitright setting
+            local old_splitright = vim.o.splitright
+            -- Set splitright to true to make preview open on the right
+            vim.o.splitright = true
+            -- Call the preview action
+            require("oil.actions").preview.callback()
+            -- Restore original splitright setting
+            vim.o.splitright = old_splitright
+          end,
+          desc = "Preview file on the right"
+        },
         ["<C-c>"] = "actions.close",
         ["<C-l>"] = "actions.refresh",
         ["-"] = "actions.parent",
@@ -70,6 +82,7 @@ return {
         ["gx"] = "actions.open_external",
         ["g."] = "actions.toggle_hidden",
         ["g\\"] = "actions.toggle_trash",
+        ["gy"] = "actions.copy_entry_path",
         ["<leader>ff"] = {
           function()
             require("telescope.builtin").find_files({
@@ -94,6 +107,84 @@ return {
             end
           end,
           desc = "Open LazyGit in current directory",
+        },
+        ["gow"] = {
+          function()
+            local oil = require("oil")
+            local entry = oil.get_cursor_entry()
+            local dir = oil.get_current_dir()
+            
+            if not entry or not dir then
+              vim.notify("No file selected", vim.log.levels.WARN)
+              return
+            end
+            
+            local filepath = dir .. entry.name
+            
+            -- Define your "Open With" applications here
+            -- You can customize this list with your preferred applications
+            local apps = {
+              { name = "Default Application", cmd = "start" },
+              { name = "GIMP", cmd = "gimp" },
+              { name = "Paint", cmd = "mspaint" },
+              { name = "Notepad", cmd = "notepad" },
+              { name = "VS Code", cmd = "code" },
+              { name = "Windows Photo Viewer", cmd = "rundll32.exe C:\\Windows\\System32\\shimgvw.dll,ImageView_Fullscreen" },
+              { name = "VLC Media Player", cmd = "vlc" },
+            }
+            
+            vim.ui.select(apps, {
+              prompt = "Open with:",
+              format_item = function(item)
+                return item.name
+              end,
+            }, function(choice)
+              if not choice then
+                return
+              end
+              
+              -- Use vim.system for better Windows compatibility
+              -- This avoids issues with WezTerm or other custom shells
+              local args
+              if choice.cmd == "start" then
+                -- Use default application
+                -- The empty string after "start" is the window title (Windows quirk)
+                args = { "cmd.exe", "/c", "start", "", filepath }
+              else
+                -- Use specific application
+                args = { "cmd.exe", "/c", "start", "", choice.cmd, filepath }
+              end
+              
+              -- Use vim.system (Neovim 0.10+) or fallback to jobstart
+              if vim.system then
+                vim.system(args, { detach = true }, function(result)
+                  -- Schedule notification to avoid fast event context error
+                  vim.schedule(function()
+                    if result.code ~= 0 then
+                      vim.notify("Failed to open file with " .. choice.name, vim.log.levels.ERROR)
+                    else
+                      vim.notify("Opened with " .. choice.name, vim.log.levels.INFO)
+                    end
+                  end)
+                end)
+              else
+                -- Fallback for older Neovim versions
+                vim.fn.jobstart(args, {
+                  detach = true,
+                  on_exit = function(_, exit_code)
+                    vim.schedule(function()
+                      if exit_code ~= 0 then
+                        vim.notify("Failed to open file with " .. choice.name, vim.log.levels.ERROR)
+                      else
+                        vim.notify("Opened with " .. choice.name, vim.log.levels.INFO)
+                      end
+                    end)
+                  end,
+                })
+              end
+            end)
+          end,
+          desc = "Open with... (context menu)",
         },
       },
       

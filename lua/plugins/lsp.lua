@@ -36,9 +36,33 @@ return {
         print("No LSP client attached")
         return
       end
+      
+      -- Show loading message
+      print("Loading definition...")
+      
       local client = clients[1]
       local params = vim.lsp.util.make_position_params(0, client.offset_encoding)
+      
+      -- Track if request has been handled to implement timeout
+      local handled = false
+      
+      -- Set a timeout
+      local timeout_timer = vim.defer_fn(function()
+        if not handled then
+          handled = true
+          print("Definition request timed out (LSP server slow or unresponsive)")
+        end
+      end, 5000) -- 5 second timeout
+      
       return vim.lsp.buf_request(0, 'textDocument/definition', params, function(err, result, ctx, config)
+        if handled then
+          return -- Timeout already triggered
+        end
+        handled = true
+        
+        -- Cancel the timeout timer
+        pcall(function() timeout_timer:close() end)
+        
         if err or not result or vim.tbl_isempty(result) then
           print("No definition found")
           return
@@ -49,30 +73,27 @@ return {
         local uri = location.uri or location.targetUri
         local range = location.range or location.targetRange
         
-        -- Get the file path and read it directly to avoid swap file issues
+        -- Get the file path
         local filepath = vim.uri_to_fname(uri)
         
-        -- Read the file directly
-        local file = io.open(filepath, 'r')
-        if not file then
-          print("Could not open file: " .. filepath)
+        -- Calculate which lines we need
+        local start_line = range.start.line
+        local end_line = range['end'].line
+        local context_start = math.max(0, start_line - 2)  -- 0-indexed
+        local context_end = end_line + 11
+        
+        -- Use vim.fn.readfile for more efficient reading
+        -- Read only the lines we need (with some buffer for context)
+        local success, all_lines = pcall(vim.fn.readfile, filepath)
+        if not success or not all_lines then
+          print("Could not read file: " .. filepath)
           return
         end
         
-        local all_lines = {}
-        for line in file:lines() do
-          table.insert(all_lines, line)
-        end
-        file:close()
-        
-        -- Get the lines to display
-        local start_line = range.start.line
-        local end_line = range['end'].line
-        local context_start = math.max(1, start_line - 2)
-        local context_end = math.min(#all_lines, end_line + 11)
-        
+        -- Extract the lines we need (Lua tables are 1-indexed)
+        local actual_context_end = math.min(#all_lines, context_end + 1)
         local lines = {}
-        for i = context_start, context_end do
+        for i = context_start + 1, actual_context_end do
           table.insert(lines, all_lines[i])
         end
         
@@ -105,6 +126,9 @@ return {
         vim.api.nvim_set_option_value('winblend', 10, { win = win })
         vim.api.nvim_buf_set_keymap(buf, 'n', 'q', ':close<CR>', { noremap = true, silent = true })
         vim.api.nvim_buf_set_keymap(buf, 'n', '<Esc>', ':close<CR>', { noremap = true, silent = true })
+        
+        -- Clear the loading message
+        vim.cmd('echo ""')
       end)
     end
 
@@ -217,5 +241,22 @@ return {
       vim.cmd('LspRestart')
       print('Python path set to: ' .. path)
     end, { nargs = 1, complete = 'file' })
+
+    -- Function to reload venv and restart LSP
+    local function reload_python_venv()
+      local new_python_path = get_python_path()
+      if new_python_path then
+        vim.lsp.config.pyright.settings.python.pythonPath = new_python_path
+        vim.cmd('LspRestart')
+        print('Python venv detected and LSP restarted: ' .. new_python_path)
+      else
+        vim.lsp.config.pyright.settings.python.pythonPath = nil
+        vim.cmd('LspRestart')
+        print('No venv found, using system Python. LSP restarted.')
+      end
+    end
+
+    -- Keymap to reload Python venv (available globally, not just in LSP buffers)
+    vim.keymap.set('n', '<leader>vr', reload_python_venv, { desc = "Reload Python venv and restart LSP" })
   end,
 }

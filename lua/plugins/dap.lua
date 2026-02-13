@@ -90,25 +90,25 @@ return {
       dapui.close()
     end
 
-    -- Keybindings
-    vim.keymap.set('n', '<leader>db', dap.toggle_breakpoint, { desc = "Toggle breakpoint" })
-    vim.keymap.set('n', '<leader>dc', dap.continue, { desc = "Continue/Start debugging" })
-    vim.keymap.set('n', '<leader>di', dap.step_into, { desc = "Step into" })
-    vim.keymap.set('n', '<leader>do', dap.step_over, { desc = "Step over" })
-    vim.keymap.set('n', '<leader>dO', dap.step_out, { desc = "Step out" })
-    vim.keymap.set('n', '<leader>dr', dap.repl.open, { desc = "Open REPL" })
-    vim.keymap.set('n', '<leader>dl', dap.run_last, { desc = "Run last" })
-    vim.keymap.set('n', '<leader>dt', dapui.toggle, { desc = "Toggle DAP UI" })
-    vim.keymap.set('n', '<leader>dx', dap.terminate, { desc = "Terminate debugging" })
-    vim.keymap.set('n', '<leader>dB', function()
+    -- Keybindings (using \b for "breakpoint/debug")
+    vim.keymap.set('n', '<leader>bb', dap.toggle_breakpoint, { desc = "Toggle breakpoint" })
+    vim.keymap.set('n', '<leader>bc', dap.continue, { desc = "Continue/Start debugging" })
+    vim.keymap.set('n', '<leader>bi', dap.step_into, { desc = "Step into" })
+    vim.keymap.set('n', '<leader>bo', dap.step_over, { desc = "Step over" })
+    vim.keymap.set('n', '<leader>bO', dap.step_out, { desc = "Step out" })
+    vim.keymap.set('n', '<leader>br', dap.repl.open, { desc = "Open REPL" })
+    vim.keymap.set('n', '<leader>bl', dap.run_last, { desc = "Run last" })
+    vim.keymap.set('n', '<leader>bt', dapui.toggle, { desc = "Toggle DAP UI" })
+    vim.keymap.set('n', '<leader>bx', dap.terminate, { desc = "Terminate debugging" })
+    vim.keymap.set('n', '<leader>bB', function()
       dap.set_breakpoint(vim.fn.input('Breakpoint condition: '))
     end, { desc = "Set conditional breakpoint" })
 
     -- Python-specific keybindings
-    vim.keymap.set('n', '<leader>dpm', function()
+    vim.keymap.set('n', '<leader>bpm', function()
       require('dap-python').test_method()
     end, { desc = "Debug Python test method" })
-    vim.keymap.set('n', '<leader>dpc', function()
+    vim.keymap.set('n', '<leader>bpc', function()
       require('dap-python').test_class()
     end, { desc = "Debug Python test class" })
 

@@ -41,11 +41,9 @@ return {
       },
     })
 
-    -- Register group names for better organization
-    -- These create category headers when you press the leader key
+    -- Register keymaps for which-key (flat list, no groups)
     wk.add({
       -- Telescope (Find)
-      { "\\f", group = "Find (Telescope)" },
       { "\\ff", desc = "Find files" },
       { "\\fF", desc = "Find ALL files (hidden + ignored)" },
       { "\\fg", desc = "Live grep" },
@@ -54,30 +52,32 @@ return {
       { "\\fr", desc = "Recent files" },
       { "\\fw", desc = "Find word under cursor" },
       
-      -- Explorer (nvim-tree)
-      { "\\e", group = "Explorer (nvim-tree)" },
-      { "\\ef", desc = "Find current file in explorer" },
+      -- Explorer (nvim-tree & Oil)
+      { "\\e", desc = "Toggle nvim-tree" },
+      { "\\ef", desc = "Find current file in nvim-tree" },
+      { "\\o", desc = "Open Oil file explorer" },
+      { "\\O", desc = "Open Oil (floating window)" },
+      { "-", desc = "Open parent directory (Oil)" },
       
-      -- Debug (DAP)
-      { "\\d", group = "Debug (DAP)" },
-      { "\\db", desc = "Toggle breakpoint" },
-      { "\\dc", desc = "Continue/Start debugging" },
-      { "\\di", desc = "Step into" },
-      { "\\do", desc = "Step over" },
-      { "\\dO", desc = "Step out" },
-      { "\\dr", desc = "Open REPL" },
-      { "\\dl", desc = "Run last" },
-      { "\\dt", desc = "Toggle DAP UI" },
-      { "\\dx", desc = "Terminate debugging" },
-      { "\\dB", desc = "Set conditional breakpoint" },
-      { "\\dp", group = "Debug Python" },
-      { "\\dpm", desc = "Debug Python test method" },
-      { "\\dpc", desc = "Debug Python test class" },
+      -- Debug (DAP) - using \b for "breakpoint/debug"
+      { "\\bb", desc = "Toggle breakpoint" },
+      { "\\bc", desc = "Continue/Start debugging" },
+      { "\\bi", desc = "Step into" },
+      { "\\bo", desc = "Step over" },
+      { "\\bO", desc = "Step out" },
+      { "\\br", desc = "Open REPL" },
+      { "\\bl", desc = "Run last" },
+      { "\\bt", desc = "Toggle DAP UI" },
+      { "\\bx", desc = "Terminate debugging" },
+      { "\\bB", desc = "Set conditional breakpoint" },
+      { "\\bpm", desc = "Debug Python test method" },
+      { "\\bpc", desc = "Debug Python test class" },
+      
+      -- Diagnostics (LSP) - freed up \d
+      { "\\d", desc = "Show diagnostics (float)" },
       
       -- Git operations
-      { "\\g", group = "Git" },
       { "\\gg", desc = "LazyGit" },
-      { "\\h", group = "Git Hunks" },
       { "\\hs", desc = "Stage hunk" },
       { "\\hr", desc = "Reset hunk" },
       { "\\hS", desc = "Stage buffer" },
@@ -86,30 +86,24 @@ return {
       { "\\hp", desc = "Preview hunk" },
       { "\\hb", desc = "Blame line" },
       { "\\hd", desc = "Diff this" },
-      
-      -- Toggle line blame (top-level)
       { "\\tb", desc = "Toggle line blame" },
       
       -- Markdown
-      { "\\m", group = "Markdown" },
       { "\\mt", desc = "Toggle markdown rendering" },
       { "\\me", desc = "Enable markdown rendering" },
       { "\\md", desc = "Disable markdown rendering" },
       
       -- Code actions (LSP)
-      { "\\c", group = "Code (LSP)" },
       { "\\ca", desc = "Code action" },
       
       -- Refactor
-      { "\\r", group = "Refactor" },
       { "\\rn", desc = "Rename symbol" },
       
       -- Aerial
       { "\\a", desc = "Toggle Aerial" },
-      { "\\o", desc = "Toggle Aerial Navigation" },
+      { "\\an", desc = "Toggle Aerial Navigation" },
       
       -- LSP 'g' prefix mappings (these are buffer-local, shown when LSP is active)
-      { "g", group = "Go to (LSP)" },
       { "gd", desc = "Go to definition" },
       { "gD", desc = "Go to declaration" },
       { "gr", desc = "Go to references" },
@@ -117,14 +111,35 @@ return {
       { "gp", desc = "Peek definition" },
       { "gs", desc = "Go to definition (split)" },
       { "gv", desc = "Go to definition (vsplit)" },
+      { "gow", desc = "Open with... (context menu)" },
+      { "gx", desc = "Open with default app" },
+      { "gy", desc = "Copy file/folder path" },
+      { "gnn", desc = "Start incremental selection" },
+      { "grn", desc = "Increment to upper named parent" },
+      { "grc", desc = "Increment to upper scope" },
+      { "grm", desc = "Decrement to previous node" },
+      
+      -- LSP Hover and other top-level keys
+      { "K", desc = "Hover documentation (LSP)" },
+      
+      -- Flash motion keys
+      { "s", desc = "Flash jump" },
+      { "S", desc = "Flash treesitter" },
       
       -- Navigation
-      { "[", group = "Previous" },
       { "[c", desc = "Previous git hunk" },
       { "[d", desc = "Previous diagnostic" },
-      { "]", group = "Next" },
       { "]c", desc = "Next git hunk" },
       { "]d", desc = "Next diagnostic" },
+      
+      -- Completion (insert mode - informational only)
+      -- Note: These are insert mode mappings, which-key shows them differently
+      { "<C-Space>", desc = "Trigger completion", mode = "i" },
+      { "<Tab>", desc = "Next completion / Expand snippet", mode = "i" },
+      { "<S-Tab>", desc = "Previous completion", mode = "i" },
+      
+      -- Autopairs
+      { "<M-e>", desc = "Fast wrap (autopairs)", mode = "i" },
     })
   end,
 }

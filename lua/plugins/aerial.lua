@@ -76,6 +76,6 @@ return {
     })
 
     vim.keymap.set("n", "<leader>a", "<cmd>AerialToggle!<CR>", { desc = "Toggle Aerial" })
-    vim.keymap.set("n", "<leader>o", "<cmd>AerialNavToggle<CR>", { desc = "Toggle Aerial Navigation" })
+    vim.keymap.set("n", "<leader>an", "<cmd>AerialNavToggle<CR>", { desc = "Toggle Aerial Navigation" })
   end,
 }

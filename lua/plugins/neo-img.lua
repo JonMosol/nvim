@@ -26,7 +26,7 @@ return {
       
       -- Important settings
       size = "100%", -- size of the image in percent
-      center = true, -- center the image in the window
+      center = false, -- disable centering so image aligns with preview window
       auto_open = false, -- Disable auto-open to prevent Telescope conflicts
       
       -- Backend configuration

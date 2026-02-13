@@ -18,11 +18,49 @@ return {
             ["<C-x>"] = "select_horizontal",
             ["<C-v>"] = "select_vertical",
             ["<C-t>"] = "select_tab",
+            -- Open selected file's directory in Oil
+            ["<leader>O"] = {
+              function(prompt_bufnr)
+                local actions = require("telescope.actions")
+                local action_state = require("telescope.actions.state")
+                local selection = action_state.get_selected_entry()
+                actions.close(prompt_bufnr)
+                
+                if selection then
+                  local filepath = selection.path or selection.filename
+                  if filepath then
+                    local dir = vim.fn.fnamemodify(filepath, ":h")
+                    require("oil").open(dir)
+                  end
+                end
+              end,
+              type = "action",
+              opts = { desc = "Open directory in Oil" }
+            },
           },
           n = {
             ["<C-x>"] = "select_horizontal",
             ["<C-v>"] = "select_vertical",
             ["<C-t>"] = "select_tab",
+            -- Open selected file's directory in Oil
+            ["-"] = {
+              function(prompt_bufnr)
+                local actions = require("telescope.actions")
+                local action_state = require("telescope.actions.state")
+                local selection = action_state.get_selected_entry()
+                actions.close(prompt_bufnr)
+                
+                if selection then
+                  local filepath = selection.path or selection.filename
+                  if filepath then
+                    local dir = vim.fn.fnamemodify(filepath, ":h")
+                    require("oil").open(dir)
+                  end
+                end
+              end,
+              type = "action",
+              opts = { desc = "Open directory in Oil" }
+            },
           },
         },
         -- Disable treesitter highlighting in preview to avoid ft_to_lang error

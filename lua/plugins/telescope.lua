@@ -10,6 +10,14 @@ return {
     
     require("telescope").setup({
       defaults = {
+        -- Exclude folders that trigger automatic downloads from Phone Link and OneDrive
+        file_ignore_patterns = {
+          -- Match both / and \ since Windows paths use backslashes
+          "CrossDevice[/\\]",
+          "OneDrive[/\\]",
+          "AppData[/\\]Local[/\\]Packages[/\\]",
+          "%.cloud$",
+        },
         mappings = {
           i = {
             ["<C-j>"] = "move_selection_next",

@@ -423,23 +423,23 @@ Full debugging support with Debug Adapter Protocol.
 - Automatic UI that opens when debugging starts
 
 **Keybindings**:
-- `\db` - Toggle breakpoint
-- `\dc` - Start/Continue debugging
-- `\di` - Step into function
-- `\do` - Step over line
-- `\dO` - Step out of function
-- `\dx` - Stop/Terminate debugging
-- `\dt` - Toggle debug UI
-- `\dB` - Set conditional breakpoint
-- `\dr` - Open debug REPL
-- `\dl` - Run last debug configuration
+- `\bb` - Toggle breakpoint
+- `\bc` - Start/Continue debugging
+- `\bi` - Step into function
+- `\bo` - Step over line
+- `\bO` - Step out of function
+- `\bx` - Stop/Terminate debugging
+- `\bt` - Toggle debug UI
+- `\bB` - Set conditional breakpoint
+- `\br` - Open debug REPL
+- `\bl` - Run last debug configuration
 
 **Python-specific**:
-- `\dpm` - Debug Python test method
-- `\dpc` - Debug Python test class
+- `\bpm` - Debug Python test method
+- `\bpc` - Debug Python test class
 
 **Requirements**:
-- Python: `pip install debugpy`
+- Python: `:MasonInstall debugpy` (the debugger runs from Mason's install; your program runs with the project's `venv`/`.venv` if one exists)
 
 **Breakpoint Symbols**:
 - `●` - Active breakpoint
@@ -501,14 +501,14 @@ Full debugging support with Debug Adapter Protocol.
 4. Use `:Mason` to install additional language servers
 
 ### Debugging Python Code
-1. Install debugpy: `pip install debugpy`
+1. Install debugpy once: `:MasonInstall debugpy`
 2. Open a Python file
-3. Set a breakpoint with `\db` on the line you want to pause at
-4. Press `\dc` to start debugging
-5. Use `\do` to step over lines, `\di` to step into functions
+3. Set a breakpoint with `\bb` on the line you want to pause at
+4. Press `\bc` to start debugging
+5. Use `\bo` to step over lines, `\bi` to step into functions
 6. Inspect variables in the left panel (Scopes)
 7. See variable values shown inline as virtual text
-8. Press `\dx` to stop debugging
+8. Press `\bx` to stop debugging
 
 ### Smart Code Selection
 1. Put cursor on a word or symbol
@@ -562,7 +562,7 @@ mv lua/plugins/telescope.lua lua/plugins/telescope.lua.disabled
 - [ripgrep](https://github.com/BurntSushi/ripgrep) - For Telescope live grep
 - [lazygit](https://github.com/jesseduffield/lazygit) - For LazyGit integration
 - [fd](https://github.com/sharkdp/fd) - For faster Telescope file finding
-- [debugpy](https://github.com/microsoft/debugpy) - For Python debugging (`pip install debugpy`)
+- [debugpy](https://github.com/microsoft/debugpy) - For Python debugging (`:MasonInstall debugpy`)
 
 ## 📚 Useful Commands
 
@@ -625,10 +625,9 @@ These are normal and can be ignored. Neovim handles them automatically.
 3. Update parsers: `:TSUpdate`
 
 ### Debugger not working
-1. Ensure debugpy is installed: `pip install debugpy`
-2. Check if it's in your virtual environment
-3. Verify Python path is correct: `:LspInfo`
-4. Try setting manually: `:PythonSetPath /path/to/venv/python`
+1. Ensure debugpy is installed in Mason: `:Mason` (or `:MasonInstall debugpy`)
+2. Check the debug log: `:DapShowLog`
+3. Your program runs with the first of: an activated virtualenv, a conda env, or a `venv`/`.venv`/`env`/`.env` folder in the project. Without one, it runs with Mason's debugpy Python, which won't have your project's packages.
 
 ### Telescope preview showing binary data for images
 This has been fixed. Telescope now shows image file info in preview instead of binary data. Press Enter to view the image with sixel rendering.

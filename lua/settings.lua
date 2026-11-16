@@ -15,7 +15,9 @@ vim.opt.relativenumber = true -- Show relative line numbers
 vim.opt.clipboard = 'unnamedplus' -- Use system clipboard
 
 -- Terminal settings
-vim.o.shell = 'wezterm.exe'
-vim.o.shellcmdflag = 'cli'
+vim.o.shell = 'powershell'
+vim.o.shellcmdflag = "-NoLogo -NonInteractive -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.UTF8Encoding]::new();$PSDefaultParameterValues['Out-File:Encoding']='utf8';"
+vim.o.shellredir = '2>&1 | %%{ "$_" } | Out-File %s; exit $LastExitCode'
+vim.o.shellpipe = '2>&1 | %%{ "$_" } | tee %s; exit $LastExitCode'
 vim.o.shellxquote = ''
 vim.o.shellquote = ''

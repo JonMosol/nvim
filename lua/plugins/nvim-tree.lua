@@ -13,7 +13,8 @@ return {
         sorter = "case_sensitive",
       },
       view = {
-        adaptive_size = true,
+        width = { min = 30, max = 50 },
+        preserve_window_proportions = true,
       },
       renderer = {
         group_empty = true,

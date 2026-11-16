@@ -2,6 +2,10 @@ return {
   'nvim-lualine/lualine.nvim',
   dependencies = { 'nvim-tree/nvim-web-devicons' },
   config = function()
+    local function win_number()
+      return "#" .. vim.fn.winnr()
+    end
+
     require('lualine').setup({
       options = {
         icons_enabled = true,
@@ -22,7 +26,7 @@ return {
         }
       },
       sections = {
-        lualine_a = {'mode'},
+        lualine_a = {win_number, 'mode'},
         lualine_b = {'branch', 'diff', 'diagnostics'},
         lualine_c = {'filename'},
         lualine_x = {'encoding', 'fileformat', 'filetype'},
@@ -30,7 +34,7 @@ return {
         lualine_z = {'location'}
       },
       inactive_sections = {
-        lualine_a = {},
+        lualine_a = {win_number},
         lualine_b = {},
         lualine_c = {'filename'},
         lualine_x = {'location'},

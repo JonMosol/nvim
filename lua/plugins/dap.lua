@@ -58,26 +58,9 @@ return {
     })
 
     -- Setup Python debugging
-    -- Automatically finds python in your virtualenv
-    local function get_python_path()
-      local cwd = vim.fn.getcwd()
-      local venv_paths = {
-        cwd .. '/.venv/Scripts/python.exe',  -- Windows
-        cwd .. '/.venv/bin/python',          -- Linux/Mac
-        cwd .. '/venv/Scripts/python.exe',   -- Windows alternative
-        cwd .. '/venv/bin/python',           -- Linux/Mac alternative
-      }
-      
-      for _, path in ipairs(venv_paths) do
-        if vim.fn.filereadable(path) == 1 then
-          return path
-        end
-      end
-      
-      return 'python'  -- Fallback to system python
-    end
-
-    dap_python.setup(get_python_path())
+    -- The debug adapter runs from Mason's debugpy install (:MasonInstall debugpy).
+    -- The program being debugged uses the project's venv/.venv, detected by dap-python when debugging starts.
+    dap_python.setup(vim.fn.stdpath("data") .. "/mason/packages/debugpy/venv/Scripts/python.exe")
 
     -- Automatically open/close UI when debugging starts/ends
     dap.listeners.after.event_initialized["dapui_config"] = function()
